@@ -39,6 +39,7 @@ android {
         // and uncomment lines with static assignments.
 
         buildConfigField 'String', 'API_KEY', "\"${geiaApiKey}\""
+        buildConfigField 'String', 'HOSTS_URL', "\"https://${geiaHost}/hosts/id/\""
         buildConfigField 'int', 'VERSION_CODE', "${rootProject.ext.version_code}"
         buildConfigField 'String', 'VERSION_NAME', "\"${rootProject.ext.version_name}\""
 

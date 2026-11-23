@@ -40,7 +40,9 @@ import okhttp3.ResponseBody;
 
 public class BrandingConfig {
     private static final String TAG = "ClientConfig";
-    private static final String HOSTS = "https://hosts.tinode.co/id/";
+    // Brand-code lookups go to OUR server (app/build.gradle: https://<geiaHost>/hosts/id/), never to Tinode.
+    // Nothing is published there, so every code answers 404 and the app ignores it.
+    private static final String HOSTS = BuildConfig.HOSTS_URL;
     private static final int CHUNK_SIZE = 2048;
     private static final int NETWORK_TIMEOUT = 5; // seconds
 
