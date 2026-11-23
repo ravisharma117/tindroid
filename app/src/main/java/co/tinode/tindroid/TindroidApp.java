@@ -123,13 +123,12 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
     }
 
     public static String getDefaultHostName() {
-        return sContext.getResources().getString(isEmulator() ?
-                R.string.emulator_host_name :
-                R.string.default_host_name);
+        // Emulators use the same server as phones (the Geia server, see geiaHost in app/build.gradle).
+        return sContext.getResources().getString(R.string.default_host_name);
     }
 
     public static boolean getDefaultTLS() {
-        return !isEmulator();
+        return true;
     }
 
     public static void retainCache(Cache cache) {

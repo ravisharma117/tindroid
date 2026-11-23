@@ -8,6 +8,13 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
+// Server this build talks to. Defaults: the Geia test server (https://207.244.254.58). The API key is public by
+// design (compiled into every client) but only works with that server's API_KEY_SALT: it is the server's
+// API_KEY from .env (deploy/server/messenger). Override for another server, e.g. production:
+//   ./gradlew assembleDebug -PgeiaHost=chat.example.com -PgeiaApiKey=<API_KEY of that server>
+def geiaHost = project.findProperty('geiaHost') ?: '207.244.254.58'
+def geiaApiKey = project.findProperty('geiaApiKey') ?: 'AQAAAAABAAC5ApWzc4f_ptJ0btDXsBjS'
+
 android {
     namespace 'co.tinode.tindroid'
 
@@ -31,6 +38,7 @@ android {
         // If you are getting errors due to git not being setup comment out lines gitVersion*()
         // and uncomment lines with static assignments.
 
+        buildConfigField 'String', 'API_KEY', "\"${geiaApiKey}\""
         buildConfigField 'int', 'VERSION_CODE', "${rootProject.ext.version_code}"
         buildConfigField 'String', 'VERSION_NAME', "\"${rootProject.ext.version_name}\""
 
@@ -41,10 +49,10 @@ android {
 
     buildTypes {
         debug {
-            resValue "string", "default_host_name", '"sandbox.tinode.co"'
+            resValue "string", "default_host_name", "\"${geiaHost}\""
         }
         release {
-            resValue "string", "default_host_name", '"api.tinode.co"'
+            resValue "string", "default_host_name", "\"${geiaHost}\""
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

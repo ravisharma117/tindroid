@@ -38,7 +38,8 @@ import co.tinode.tinodesdk.model.ServerMessage;
 public class Cache {
     private static final String TAG = "Cache";
 
-    private static final String API_KEY = "AQEAAAABAAD_rAp4DJh05a1HAwFT3A6K";
+    // The server's own API key, set in app/build.gradle (-PgeiaApiKey=...).
+    private static final String API_KEY = BuildConfig.API_KEY;
 
     private static final Cache sInstance = new Cache();
 
