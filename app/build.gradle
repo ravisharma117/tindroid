@@ -28,7 +28,7 @@ android {
     }
 
     defaultConfig {
-        // GEIA: proposed ID (client item C9); permanent after the first store release.
+        // GEIA: proposed ID (client item C7); permanent after the first store release.
         applicationId "com.geia.messaging"
         minSdkVersion 27
         targetSdkVersion 36
