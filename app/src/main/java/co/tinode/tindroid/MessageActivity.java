@@ -135,7 +135,7 @@ public class MessageActivity extends BaseActivity
                             Intent intent2 = new Intent();
                             intent2.setAction(android.content.Intent.ACTION_VIEW);
                             intent2.setDataAndType(FileProvider.getUriForFile(MessageActivity.this,
-                                    "co.tinode.tindroid.provider", new File(fileUri)), mimeType);
+                                    MessageActivity.this.getPackageName() + ".provider", new File(fileUri)), mimeType);
                             intent2.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                             try {
                                 startActivity(intent2);

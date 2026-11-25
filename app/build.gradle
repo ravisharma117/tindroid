@@ -28,7 +28,8 @@ android {
     }
 
     defaultConfig {
-        applicationId "co.tinode.tindroidx"
+        // GEIA: proposed ID (client item C9); permanent after the first store release.
+        applicationId "com.geia.messaging"
         minSdkVersion 27
         targetSdkVersion 36
         compileSdkVersion 36

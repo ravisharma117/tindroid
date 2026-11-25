@@ -68,7 +68,7 @@ public class UtilsMedia {
             path.mkdirs();
         }
 
-        return FileProvider.getUriForFile(context, "co.tinode.tindroid.provider", file);
+        return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
     }
 
     // Create temporary file to store image and return its Uri.

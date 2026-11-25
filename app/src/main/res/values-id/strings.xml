@@ -62,12 +62,10 @@
      alphabet using ListView fast scroll. -->
     <string name="alphabet">\ ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 
-    <string name="tinode_invite_subject">Coba Tinode Messenger</string>
-    <string name="tinode_invite_body">Coba Tinode Messenger. Unduh dari https://tinode.co</string>
 
-    <string name="profile_action">Profil Tinode</string>
+    <string name="profile_action">Profil Geia Messaging</string>
     <string name="view_profile">Lihat profil</string>
-    <string name="tinode_message">Kirim pesan Tinode</string>
+    <string name="tinode_message">Kirim pesan Geia Messaging</string>
     <string name="hint_topic_title">Nama grup</string>
     <string name="group_members">Anggota grup</string>
     <string name="name_required">Nama grup diperlukan</string>
@@ -146,7 +144,7 @@
     <string name="hint_search_tags">Cari berdasarkan tag</string>
     <string name="topic_not_found_or_invalid">Percakapan tidak ditemukan atau tidak valid</string>
     <string name="sending_disabled">Tidak tersedia</string>
-    <string name="download_title">Unduhan Tinode</string>
+    <string name="download_title">Unduhan Geia Messaging</string>
     <string name="some_permissions_missing">Harap berikan semua izin yang diminta.</string>
     <string name="unable_to_attach_file">Tidak dapat melampirkan file ini</string>
     <string name="canceled">dibatalkan</string>
@@ -215,7 +213,7 @@
     <string name="outgoing_call">Panggilan keluar</string>
     <string name="incoming_call">Panggilan masuk</string>
 
-    <string name="default_contact_name">Pengguna Tinode %1$s</string>
+    <string name="default_contact_name">Pengguna Geia Messaging %1$s</string>
     <string name="permission_missing">Izin yang diperlukan belum diberikan</string>
     <string name="enter_search_query">Masukkan kata kunci pencarian</string>
     <string name="image_caption_hint">Keterangan gambar</string>
@@ -310,12 +308,12 @@
     <string name="unable_to_play_video">Tidak dapat memutar video ini.</string>
     <string name="video_call_channel_name">Panggilan video</string>
     <string name="video_call_channel_description">Panggilan video dan audio</string>
-    <string name="tinode_video_call">Panggilan video Tinode</string>
+    <string name="tinode_video_call">Panggilan video Geia Messaging</string>
     <string name="answer_call">Jawab</string>
     <string name="decline_call">Tolak</string>
     <string name="document_preview">Pratinjau dokumen</string>
     <string name="action_call">Panggil</string>
-    <string name="tinode_audio_call">Panggilan Tinode</string>
+    <string name="tinode_audio_call">Panggilan Geia Messaging</string>
     <string name="unable_to_place_call">Tidak dapat melakukan panggilan ini</string>
     <string name="phone_sms_explained">Kami akan mengirim SMS berisi kode konfirmasi ke nomor di atas.</string>
     <string name="phone_number_required">Nomor telepon yang valid diperlukan</string>
