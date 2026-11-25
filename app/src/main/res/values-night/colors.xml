@@ -38,4 +38,7 @@
     <color name="circularProgressFg">#FFCCCCCC</color>
 
     <color name="colorImageMetaPanel">#80000000</color>
+
+    <!-- Geia: dark splash background in night mode (the teal symbol reads on both). -->
+    <color name="colorSplashScreenBackground">#FF1F1B1C</color>
 </resources>

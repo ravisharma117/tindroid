@@ -33,7 +33,7 @@
     <color name="colorUserOnlineH2">#FF10EE10</color>
     <color name="colorUserOnlineH3">#FF00FF00</color>
 
-    <color name="colorSplashScreenBackground">#FF3949AB</color>
+    <color name="colorSplashScreenBackground">#FFFFFFFF</color>
 
     <color name="colorNotificationBackground">#3949AB</color>
 
@@ -117,5 +117,5 @@
     <color name="letter_tile_text_color_dark">#dedede</color>
     <color name="letter_tile_bg_color_dark">#777</color>
     <color name="letter_tile_self_bg_color">#eee</color>
-    <color name="launcherBackground">#ffffff</color>
+    <color name="launcherBackground">#2F8485</color>
 </resources>
