@@ -168,6 +168,8 @@
     <string name="invalid_confirmation_code">Invalid code</string>
     <string name="new_message_channel_name">New message</string>
     <!-- Used in push notifications -->
+    <string name="push_title" translatable="false">Geia Messaging</string>
+    <string name="push_body" translatable="false">New message received</string>
     <string name="new_message">New message</string>
     <string name="new_message_channel_description">New message was received</string>
     <string name="request_pass_reset_title">Password reset</string>

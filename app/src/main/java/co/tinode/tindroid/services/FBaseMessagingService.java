@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.RingtoneManager;
@@ -19,7 +18,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StyleableRes;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -32,13 +30,8 @@ import co.tinode.tindroid.MessageActivity;
 import co.tinode.tindroid.R;
 import co.tinode.tindroid.UiUtils;
 import co.tinode.tindroid.account.Utils;
-import co.tinode.tindroid.format.FontFormatter;
-import co.tinode.tindroid.media.VxCard;
-import co.tinode.tinodesdk.ComTopic;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
-import co.tinode.tinodesdk.User;
-import co.tinode.tinodesdk.model.Drafty;
 
 /**
  * Receive and handle (e.g. show) a push notification message.
@@ -95,31 +88,8 @@ public class FBaseMessagingService extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        // New message notification (msg):
-        // - P2P
-        //   Title: <sender name> || 'Unknown'
-        //   Icon: <sender avatar> || (*)
-        //   Body: <message content> || 'New message'
-        // - GRP
-        //   Title: <topic name> || 'Unknown'
-        //   Icon: <sender avatar> || (*)
-        //   Body: <sender name>: <message content> || 'New message'
-        //
-        // Subscription notification (sub):
-        // New subscription:
-        // - P2P
-        //   Title: 'New chat'
-        //   Icon: <sender avatar> || (*)
-        //   Body: <sender name> || 'Unknown'
-        // - GRP
-        //   Title: 'New chat' ('by ' <sender name> || None)
-        //   Icon: <group avatar> || (*)
-        //   Body: <group name> || 'Unknown'
-        // Deleted subscription:
-        //   Always silent.
-        //
-        // Message read by the current user from another device (read):
-        //   Always silent.
+        // GEIA: every visible notification (message, new chat) reads "Geia Messaging" / "New message received":
+        // nothing private is shown, whatever the push contains. Silent pushes (read, deleted, calls) are unchanged.
         //
 
         String topicName;
@@ -174,121 +144,15 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                 return;
             }
 
-            // Try to resolve sender using locally stored contacts.
-            String senderName = null;
-            Bitmap senderIcon = null;
-            if (senderId != null) {
-                User<VxCard> sender = tinode.getUser(senderId);
-                // Assign sender's name and avatar.
-                if (sender != null && sender.pub != null) {
-                    senderName = sender.pub.fn;
-                    senderIcon = UiUtils.avatarBitmap(this, sender.pub, Topic.TopicType.P2P,
-                            senderId, AVATAR_SIZE);
-                }
+            // GEIA: content-free notifications. Whatever the push carries, the visible text is fixed: no sender,
+            // no chat name, no avatar and no message text on the lock screen. The app fetches the real message
+            // itself (oobNotification above). The server sends references only (see the fcm payload patch).
+            if (!TextUtils.isEmpty(what) && !"msg".equals(what) && !"sub".equals(what)) {
+                Log.w(TAG, "Unexpected notification type=" + what);
+                return;
             }
-
-            if (senderName == null) {
-                senderName = getResources().getString(R.string.sender_unknown);
-            }
-            if (senderIcon == null) {
-                senderIcon = UiUtils.avatarBitmap(this, null, Topic.TopicType.P2P,
-                        senderId, AVATAR_SIZE);
-            }
-
-            String title = null;
-            CharSequence body = null;
-            Bitmap avatar = null;
-            if (TextUtils.isEmpty(what) || "msg".equals(what)) {
-                avatar = senderIcon;
-
-                // Try to retrieve rich message content.
-                String richContent = data.get("rc");
-                if (!TextUtils.isEmpty(richContent)) {
-                    try {
-                        Drafty draftyBody = Tinode.jsonDeserialize(richContent, Drafty.class.getCanonicalName());
-                        if (draftyBody != null) {
-                            @SuppressLint("ResourceType") @StyleableRes int[] attrs = {android.R.attr.textSize};
-                            float fontSize = 14f;
-                            TypedArray ta = obtainStyledAttributes(androidx.core.R.style.TextAppearance_Compat_Notification, attrs);
-                            fontSize = ta.getDimension(0, fontSize);
-                            ta.recycle();
-                            body = draftyBody.shorten(MAX_MESSAGE_LENGTH, true)
-                                    .format(new FontFormatter(this, fontSize));
-                        } else {
-                            // The content is plain text.
-                            body = richContent;
-                        }
-                    } catch (ClassCastException ex) {
-                        Log.w(TAG, "Failed to de-serialize payload", ex);
-                    }
-                }
-
-                // If rich content is not available, use plain text content.
-                if (TextUtils.isEmpty(body)) {
-                    body = data.get("content");
-                    if (TextUtils.isEmpty(body)) {
-                        body = getResources().getString(R.string.new_message);
-                    }
-                }
-
-                if (tp == Topic.TopicType.P2P) {
-                    // P2P message
-                    title = senderName;
-                } else {
-                    // Group message
-                    ComTopic<VxCard> topic = (ComTopic<VxCard>) tinode.getTopic(topicName);
-                    if (topic == null) {
-                        // We already tried to attach to topic and get its description. If it's not available
-                        // just give up.
-                        Log.w(TAG, "Message received for an unknown topic: " + topicName);
-                        return;
-                    }
-
-                    if (topic.getPub() != null) {
-                        title = topic.getPub().fn;
-                        if (TextUtils.isEmpty(title)) {
-                            title = getResources().getString(R.string.placeholder_topic_title);
-                        }
-                        body = senderName + ": " + body;
-                    }
-                }
-            } else if ("sub".equals(what)) {
-                // New subscription notification.
-
-                // Check if this is a known topic.
-                ComTopic<VxCard> topic = (ComTopic<VxCard>) tinode.getTopic(topicName);
-                if (topic != null) {
-                    Log.d(TAG, "Duplicate invitation ignored: " + topicName);
-                    return;
-                }
-
-                // Legitimate subscription to a new topic.
-                title = getResources().getString(R.string.new_chat);
-                if (tp == Topic.TopicType.P2P) {
-                    // P2P message
-                    body = senderName;
-                    avatar = senderIcon;
-
-                } else {
-                    // Group message
-                    topic = (ComTopic<VxCard>) tinode.getTopic(topicName);
-                    if (topic == null) {
-                        Log.w(TAG, "Failed to get topic description: " + topicName);
-                        return;
-                    }
-
-                    VxCard pub = topic.getPub();
-                    if (pub == null) {
-                        body = getResources().getString(R.string.sender_unknown);
-                        avatar = UiUtils.avatarBitmap(this, null, tp, topicName, AVATAR_SIZE);
-                    } else {
-                        body = pub.fn;
-                        avatar = UiUtils.avatarBitmap(this, pub, tp, topicName, AVATAR_SIZE);
-                    }
-                }
-            }
-
-            builder = composeNotification(title, body, avatar);
+            builder = composeNotification(getResources().getString(R.string.push_title),
+                    getResources().getString(R.string.push_body), null);
 
         } else if (remoteMessage.getNotification() != null) {
             RemoteMessage.Notification remote = remoteMessage.getNotification();
